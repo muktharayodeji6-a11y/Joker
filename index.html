@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin SMM Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Admin SMM Panel</h1>
+            <p>Social Media Marketing Automation</p>
+            <div class="admin-badge">👑 Admin Only</div>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3>Total Orders</h3>
+                <p id="totalOrders">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <p id="completedOrders">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Batches</h3>
+                <p id="pendingBatches">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Spent</h3>
+                <p id="totalSpent">$0.00</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button onclick="refreshAllData()" class="action-btn refresh-btn">
+                🔄 Refresh Data
+            </button>
+            <button onclick="processNow()" class="action-btn process-btn">
+                ⚡ Process Batches Now
+            </button>
+            <button onclick="clearAllData()" class="action-btn danger-btn">
+                🗑️ Clear All Data
+            </button>
+        </div>
+
+        <!-- Order Form -->
+        <div class="order-form">
+            <h2>📦 Place New Order</h2>
+            
+            <div class="form-group">
+                <label>Select Service</label>
+                <select id="serviceSelect">
+                    <option value="1">YouTube Views - $1.00/1k</option>
+                    <option value="2">Instagram Followers - $2.00/1k</option>
+                    <option value="3">TikTok Views - $0.50/1k</option>
+                    <option value="4">Facebook Likes - $1.50/1k</option>
+                    <option value="5">Twitter Followers - $2.50/1k</option>
+                    <option value="6">Spotify Streams - $3.00/1k</option>
+                    <option value="7">SoundCloud Plays - $0.75/1k</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="quantity" placeholder="e.g., 1000" min="10">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Speed</label>
+                    <select id="hoursSelect">
+                        <option value="1">1 Hour (Express)</option>
+                        <option value="3">3 Hours (Fast)</option>
+                        <option value="6" selected>6 Hours (Standard)</option>
+                        <option value="12">12 Hours (Normal)</option>
+                        <option value="24">24 Hours (Slow)</option>
+                        <option value="48">48 Hours (Drip Feed)</option>
+                        <option value="72">72 Hours (Very Slow)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="placeOrder()" id="placeOrderBtn">
+                🚀 Place Order
+            </button>
+        </div>
+
+        <!-- Order History -->
+        <div class="orders-section">
+            <h2>📋 All Orders</h2>
+            <div id="orderHistory">
+                <p class="empty-state">No orders yet. Place your first order!</p>
+            </div>
+        </div>
+
+        <!-- Batch Log -->
+        <div class="batch-section">
+            <h2>📦 Batch Activity</h2>
+            <div id="batchLog">
+                <p class="empty-state">No batch activity yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
