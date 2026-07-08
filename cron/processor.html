@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Batch Processor</title>
+    <style>
+        body {
+            background: #0a0e27;
+            color: #64ffda;
+            font-family: monospace;
+            padding: 20px;
+            margin: 0;
+        }
+        pre {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            min-height: 200px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .status {
+            color: #8892b0;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>🔄 Batch Processor</h2>
+    <pre id="output">⏳ Starting...</pre>
+    <div class="status">Last run: <span id="timestamp">-</span></div>
+    
+    <script>
+        // ============================================
+        // BATCH PROCESSOR - Runs via cron-job.de
+        // ============================================
+        
+        function processBatches() {
+            const output = document.getElementById('output');
+            const timestamp = document.getElementById('timestamp');
+            const startTime = new Date();
+            timestamp.textContent = startTime.toLocaleString();
+            
+            output.textContent = '⏳ Checking for pending batches...\n';
+            
+            try {
+                // Get data from localStorage
+                const batches = JSON.parse(localStorage.getItem('batches') || '[]');
+                const now = new Date();
+                
+                // Find pending batches that are due
+                const pending = batches.filter(b => 
+                    b.status === 'pending' && 
+                    new Date(b.scheduled_at) <= now
+                );
+                
+                if (pending.length === 0) {
+                    output.textContent = '✅ No pending batches to process';
+                    output.textContent += '\n\n📊 Total batches: ' + batches.length;
+                    output.textContent += '\n📊 Completed: ' + batches.filter(b => b.status === 'completed').length;
+                    return;
+                }
+                
+                output.textContent = `📦 Found ${pending.length} pending batches\n\n`;
+                let processed = 0;
+                let failed = 0;
+                
+                // Process up to 10 batches per run
+                const toProcess = pending.slice(0, 10);
+                
+                toProcess.forEach((batch, index) => {
+                    try {
+                        // Simulate API call (mark as completed)
+                        batch.status = 'completed';
+                        batch.processed_at = now.toISOString();
+                        processed++;
+                        output.textContent += `✅ [${index + 1}/${toProcess.length}] Processed ${batch.quantity} items (${batch.id.substring(0, 8)})\n`;
+                    } catch (error) {
+                        batch.status = 'failed';
+                        batch.api_response = error.message;
+                        failed++;
+                        output.textContent += `❌ [${index + 1}/${toProcess.length}] Failed: ${batch.id.substring(0, 8)} - ${error.message}\n`;
+                    }
+                });
+                
+                // Save updated batches
+                localStorage.setItem('batches', JSON.stringify(batches));
+                
+                // Update order statuses
+                updateOrderStatuses();
+                
+                output.textContent += `\n✅ Processed: ${processed} | ❌ Failed: ${failed}`;
+                output.textContent += `\n⏱️ Time: ${new Date().toLocaleTimeString()}`;
+                
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}\n\n${error.stack}`;
+            }
+        }
+        
+        function updateOrderStatuses() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const batches = JSON.parse(localStorage.getItem('batches') || '[]');
+            
+            orders.forEach(order => {
+                const orderBatches = batches.filter(b => b.order_id === order.id);
+                if (orderBatches.length === 0) return;
+                
+                const allCompleted = orderBatches.every(b => b.status === 'completed');
+                const anyFailed = orderBatches.some(b => b.status === 'failed');
+                
+                if (allCompleted) {
+                    order.status = 'completed';
+                } else if (anyFailed) {
+                    order.status = 'failed';
+                } else {
+                    order.status = 'processing';
+                }
+            });
+            
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+        
+        // Auto-run when page loads
+        document.addEventListener('DOMContentLoaded', processBatches);
+        
+        // Also run immediately
+        setTimeout(processBatches, 100);
+    </script>
+</body>
+</html>
