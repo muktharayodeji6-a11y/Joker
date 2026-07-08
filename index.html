@@ -3,109 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin SMM Panel</title>
+    <title>SMM Panel Pro</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🔐 Admin SMM Panel</h1>
-            <p>Social Media Marketing Automation</p>
-            <div class="admin-badge">👑 Admin Only</div>
-        </header>
-
-        <!-- Stats Dashboard -->
-        <div class="stats" id="stats">
-            <div class="stat-card">
-                <h3>Total Orders</h3>
-                <p id="totalOrders">0</p>
+    <!-- ============================================ -->
+    <!-- TOP NAVIGATION BAR -->
+    <!-- ============================================ -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-rocket"></i>
+                <span>SMM Panel Pro</span>
             </div>
-            <div class="stat-card">
-                <h3>Completed</h3>
-                <p id="completedOrders">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>Pending Batches</h3>
-                <p id="pendingBatches">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>Total Spent</h3>
-                <p id="totalSpent">$0.00</p>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <button onclick="refreshAllData()" class="action-btn refresh-btn">
-                🔄 Refresh Data
-            </button>
-            <button onclick="processNow()" class="action-btn process-btn">
-                ⚡ Process Batches Now
-            </button>
-            <button onclick="clearAllData()" class="action-btn danger-btn">
-                🗑️ Clear All Data
-            </button>
-        </div>
-
-        <!-- Order Form -->
-        <div class="order-form">
-            <h2>📦 Place New Order</h2>
             
-            <div class="form-group">
-                <label>Select Service</label>
-                <select id="serviceSelect">
-                    <option value="1">YouTube Views - $1.00/1k</option>
-                    <option value="2">Instagram Followers - $2.00/1k</option>
-                    <option value="3">TikTok Views - $0.50/1k</option>
-                    <option value="4">Facebook Likes - $1.50/1k</option>
-                    <option value="5">Twitter Followers - $2.50/1k</option>
-                    <option value="6">Spotify Streams - $3.00/1k</option>
-                    <option value="7">SoundCloud Plays - $0.75/1k</option>
-                </select>
+            <div class="nav-links">
+                <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="#"><i class="fas fa-shopping-cart"></i> Orders</a>
+                <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
             </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Quantity</label>
-                    <input type="number" id="quantity" placeholder="e.g., 1000" min="10">
+            
+            <div class="nav-right">
+                <!-- LIVE BALANCE DISPLAY -->
+                <div class="balance-display">
+                    <i class="fas fa-wallet"></i>
+                    <span>Balance</span>
+                    <span class="balance-amount" id="liveBalance">$0.00</span>
+                    <span class="balance-change" id="balanceChange">+$0.00</span>
                 </div>
-                <div class="form-group">
-                    <label>Delivery Speed</label>
-                    <select id="hoursSelect">
-                        <option value="1">1 Hour (Express)</option>
-                        <option value="3">3 Hours (Fast)</option>
-                        <option value="6" selected>6 Hours (Standard)</option>
-                        <option value="12">12 Hours (Normal)</option>
-                        <option value="24">24 Hours (Slow)</option>
-                        <option value="48">48 Hours (Drip Feed)</option>
-                        <option value="72">72 Hours (Very Slow)</option>
-                    </select>
+                
+                <div class="nav-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Admin</span>
                 </div>
             </div>
-
-            <button onclick="placeOrder()" id="placeOrderBtn">
-                🚀 Place Order
-            </button>
         </div>
+    </nav>
 
-        <!-- Order History -->
-        <div class="orders-section">
-            <h2>📋 All Orders</h2>
-            <div id="orderHistory">
-                <p class="empty-state">No orders yet. Place your first order!</p>
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================ -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <div class="menu-item active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New Order</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-list"></i>
+                    <span>All Orders</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Pending Batches</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Batch Log</span>
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item">
+                    <i class="fas fa-database"></i>
+                    <span>Data Manager</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-sync"></i>
+                    <span>Refresh</span>
+                </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Batch Log -->
-        <div class="batch-section">
-            <h2>📦 Batch Activity</h2>
-            <div id="batchLog">
-                <p class="empty-state">No batch activity yet.</p>
+        <!-- Content -->
+        <main class="content">
+            <!-- Quick Stats -->
+            <div class="stats-grid" id="stats">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(102, 126, 234, 0.2);">
+                        <i class="fas fa-shopping-bag" style="color: #667eea;"></i>
+                    </div>
+                    <div>
+                        <h3>Total Orders</h3>
+                        <p id="totalOrders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2);">
+                        <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                    </div>
+                    <div>
+                        <h3>Completed</h3>
+                        <p id="completedOrders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2);">
+                        <i class="fas fa-hourglass-half" style="color: #f59e0b;"></i>
+                    </div>
+                    <div>
+                        <h3>Pending Batches</h3>
+                        <p id="pendingBatches">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2);">
+                        <i class="fas fa-dollar-sign" style="color: #ef4444;"></i>
+                    </div>
+                    <div>
+                        <h3>Total Spent</h3>
+                        <p id="totalSpent">$0.00</p>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <!-- Quick Actions -->
+            <div class="action-bar">
+                <button onclick="refreshAllData()" class="btn btn-primary">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button onclick="processNow()" class="btn btn-success">
+                    <i class="fas fa-play"></i> Process Now
+                </button>
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+
+            <!-- Order Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-plus-circle"></i> Place New Order</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-tag"></i> Select Service</label>
+                            <select id="serviceSelect">
+                                <option value="1">YouTube Views - $1.00/1k</option>
+                                <option value="2">Instagram Followers - $2.00/1k</option>
+                                <option value="3">TikTok Views - $0.50/1k</option>
+                                <option value="4">Facebook Likes - $1.50/1k</option>
+                                <option value="5">Twitter Followers - $2.50/1k</option>
+                                <option value="6">Spotify Streams - $3.00/1k</option>
+                                <option value="7">SoundCloud Plays - $0.75/1k</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-hashtag"></i> Quantity</label>
+                            <input type="number" id="quantity" placeholder="e.g., 1000" min="10">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Delivery Speed</label>
+                            <select id="hoursSelect">
+                                <option value="1">1 Hour (Express)</option>
+                                <option value="3">3 Hours (Fast)</option>
+                                <option value="6" selected>6 Hours (Standard)</option>
+                                <option value="12">12 Hours (Normal)</option>
+                                <option value="24">24 Hours (Slow)</option>
+                                <option value="48">48 Hours (Drip Feed)</option>
+                                <option value="72">72 Hours (Very Slow)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="placeOrder()" id="placeOrderBtn" class="btn btn-order">
+                        <i class="fas fa-rocket"></i> Place Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order History -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-list-ul"></i> Order History</h2>
+                    <span class="badge" id="orderCount">0 orders</span>
+                </div>
+                <div class="card-body">
+                    <div id="orderHistory">
+                        <p class="empty-state"><i class="fas fa-inbox"></i> No orders yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Log -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-tasks"></i> Batch Activity</h2>
+                    <span class="badge" id="batchCount">0 batches</span>
+                </div>
+                <div class="card-body">
+                    <div id="batchLog">
+                        <p class="empty-state"><i class="fas fa-inbox"></i> No batch activity</p>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
+    <!-- Scripts -->
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
-</html>
+                                </html>
