@@ -6,7 +6,7 @@
         body {
             background: #0a0e27;
             color: #64ffda;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             padding: 20px;
             margin: 0;
         }
@@ -18,6 +18,7 @@
             min-height: 200px;
             font-size: 14px;
             line-height: 1.6;
+            color: #e2e8f0;
         }
         .status {
             color: #8892b0;
@@ -25,6 +26,10 @@
             margin-top: 10px;
             text-align: center;
         }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
     </style>
 </head>
 <body>
@@ -46,20 +51,16 @@
             output.textContent = '⏳ Checking for pending batches...\n';
             
             try {
-                // Get data from localStorage
                 const batches = JSON.parse(localStorage.getItem('batches') || '[]');
                 const now = new Date();
                 
-                // Find pending batches that are due
                 const pending = batches.filter(b => 
                     b.status === 'pending' && 
                     new Date(b.scheduled_at) <= now
                 );
                 
                 if (pending.length === 0) {
-                    output.textContent = '✅ No pending batches to process';
-                    output.textContent += '\n\n📊 Total batches: ' + batches.length;
-                    output.textContent += '\n📊 Completed: ' + batches.filter(b => b.status === 'completed').length;
+                    output.innerHTML = '✅ No pending batches to process\n\n📊 <span class="info">Total batches:</span> ' + batches.length + '\n📊 <span class="success">Completed:</span> ' + batches.filter(b => b.status === 'completed').length;
                     return;
                 }
                 
@@ -67,35 +68,30 @@
                 let processed = 0;
                 let failed = 0;
                 
-                // Process up to 10 batches per run
                 const toProcess = pending.slice(0, 10);
                 
                 toProcess.forEach((batch, index) => {
                     try {
-                        // Simulate API call (mark as completed)
                         batch.status = 'completed';
                         batch.processed_at = now.toISOString();
                         processed++;
-                        output.textContent += `✅ [${index + 1}/${toProcess.length}] Processed ${batch.quantity} items (${batch.id.substring(0, 8)})\n`;
+                        output.innerHTML += `✅ [${index + 1}/${toProcess.length}] Processed ${batch.quantity} items (${batch.id.substring(0, 8)})\n`;
                     } catch (error) {
                         batch.status = 'failed';
                         batch.api_response = error.message;
                         failed++;
-                        output.textContent += `❌ [${index + 1}/${toProcess.length}] Failed: ${batch.id.substring(0, 8)} - ${error.message}\n`;
+                        output.innerHTML += `❌ [${index + 1}/${toProcess.length}] Failed: ${batch.id.substring(0, 8)} - ${error.message}\n`;
                     }
                 });
                 
-                // Save updated batches
                 localStorage.setItem('batches', JSON.stringify(batches));
-                
-                // Update order statuses
                 updateOrderStatuses();
                 
-                output.textContent += `\n✅ Processed: ${processed} | ❌ Failed: ${failed}`;
-                output.textContent += `\n⏱️ Time: ${new Date().toLocaleTimeString()}`;
+                output.innerHTML += `\n✅ <span class="success">Processed: ${processed}</span> | ❌ <span class="error">Failed: ${failed}</span>`;
+                output.innerHTML += `\n⏱️ Time: ${new Date().toLocaleTimeString()}`;
                 
             } catch (error) {
-                output.textContent = `❌ Error: ${error.message}\n\n${error.stack}`;
+                output.innerHTML = `❌ <span class="error">Error:</span> ${error.message}\n\n${error.stack}`;
             }
         }
         
@@ -122,10 +118,7 @@
             localStorage.setItem('orders', JSON.stringify(orders));
         }
         
-        // Auto-run when page loads
         document.addEventListener('DOMContentLoaded', processBatches);
-        
-        // Also run immediately
         setTimeout(processBatches, 100);
     </script>
 </body>
